@@ -1,0 +1,81 @@
+name: private-knowledge
+services:
+  caddy:
+    image: caddy:2.11.7-alpine
+    working_dir: /etc/caddy
+    user: '0:0'
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      SITE_HOST: ${SITE_HOST:?Set SITE_HOST}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${SITE_DATA_ROOT:?Set SITE_DATA_ROOT}/public:/srv:ro
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    networks: [entry, auth]
+    logging:
+      driver: json-file
+      options: {max-size: 5m, max-file: '2'}
+  authelia:
+    image: authelia/authelia:4.39.28
+    working_dir: /config
+    user: '1000:1000'
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      AUTHELIA_SERVER_DISABLE_HEALTHCHECK: 'true'
+      AUTHELIA_SESSION_SECRET_FILE: /run/secrets/session_secret
+      AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /run/secrets/storage_key
+      AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /run/secrets/reset_secret
+      AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE: /run/secrets/smtp_password
+    volumes:
+      - ./authelia:/config:ro
+      - ./auth-data:/data
+    secrets: [session_secret, storage_key, reset_secret, smtp_password]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    healthcheck:
+      test: [CMD, wget, --quiet, --tries=1, --spider, 'http://127.0.0.1:9091/auth/api/health']
+      interval: 30s
+      timeout: 3s
+      start_period: 60s
+      retries: 3
+    networks: [auth, mail]
+    logging:
+      driver: json-file
+      options: {max-size: 5m, max-file: '2'}
+  cloudflared:
+    image: cloudflare/cloudflared:2026.10.0
+    user: '65532:65532'
+    profiles: [tunnel]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command: tunnel --no-autoupdate run --token-file /run/secrets/tunnel_token
+    secrets: [tunnel_token]
+    networks: [entry]
+    logging:
+      driver: json-file
+      options: {max-size: 5m, max-file: '2'}
+networks:
+  entry: {}
+  auth:
+    internal: true
+  mail: {}
+secrets:
+  session_secret:
+    file: ./secrets/session_secret
+  storage_key:
+    file: ./secrets/storage_key
+  reset_secret:
+    file: ./secrets/reset_secret
+  smtp_password:
+    file: ./secrets/smtp_password
+  tunnel_token:
+    file: ./secrets/tunnel_token

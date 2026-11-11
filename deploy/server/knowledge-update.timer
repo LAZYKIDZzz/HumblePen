@@ -1,0 +1,11 @@
+[Unit]
+Description=Check private knowledge main every three minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=3min
+AccuracySec=10s
+Unit=knowledge-update.service
+
+[Install]
+WantedBy=timers.target

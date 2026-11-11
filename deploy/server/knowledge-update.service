@@ -1,0 +1,12 @@
+[Unit]
+Description=Update private knowledge site
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=root
+UMask=0077
+ExecStart=/usr/bin/python3 /path/to/private-config/update.py --config /path/to/private-config/update.json
+TimeoutStartSec=1200

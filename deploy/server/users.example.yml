@@ -1,0 +1,7 @@
+users:
+  owner:
+    disabled: false
+    displayname: Owner
+    password: '<ARGON2ID_HASH>'
+    email: user@example.com
+    groups: [readers]

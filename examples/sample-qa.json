@@ -1,0 +1,17 @@
+{
+  "date": "2026-01-02",
+  "timeZone": "Asia/Shanghai",
+  "status": "complete",
+  "entries": [
+    {
+      "askedAt": "2026-01-02T01:00:00.000Z",
+      "question": "接着上一条查找笔记。如果搜索词是 check.ready，grep 的 -F 为什么会影响结果？",
+      "answer": "默认 grep 把 . 解释为匹配任意一个字符的正则元字符。-F 使用固定字符串模式，要求文本包含字面量 check.ready。例如 checkXready 仅能匹配默认正则模式。"
+    },
+    {
+      "askedAt": "2026-01-02T01:05:00.000Z",
+      "question": "如何用 grep 统计包含固定字符串的行数？一行出现两次怎么算？",
+      "answer": "使用 grep -cF -- 'check.ready' /path/to/example.log。-c 统计匹配的行，一行出现多次也只计一行。没有匹配时会打印 0，退出状态为 1；需要在脚本中区分无匹配和读取错误。"
+    }
+  ]
+}

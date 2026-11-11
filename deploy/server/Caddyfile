@@ -1,0 +1,61 @@
+{
+    admin off
+    auto_https off
+    persist_config off
+}
+
+:8080 {
+    @site host {$SITE_HOST}
+    handle @site {
+        header {
+            Cache-Control "private, no-store"
+            CDN-Cache-Control "no-store"
+            Cloudflare-CDN-Cache-Control "no-store"
+            X-Content-Type-Options "nosniff"
+            X-Frame-Options "DENY"
+            X-Robots-Tag "noindex, nofollow, noarchive"
+            Referrer-Policy "no-referrer"
+            Strict-Transport-Security "max-age=31536000"
+        }
+        @login path /auth /auth/*
+        handle @login {
+            reverse_proxy authelia:9091 {
+                header_up X-Forwarded-Proto https
+                header_up X-Forwarded-Host {$SITE_HOST}
+                # Only cloudflared reaches the entry network; Cloudflare sets this header.
+                header_up X-Forwarded-For {http.request.header.CF-Connecting-IP}
+            }
+        }
+        handle {
+            route {
+                request_header -Remote-User
+                request_header -Remote-Groups
+                request_header -Remote-Email
+                request_header -Remote-Name
+                forward_auth authelia:9091 {
+                    uri /api/authz/forward-auth
+                    header_up X-Forwarded-Proto https
+                    header_up X-Forwarded-Host {$SITE_HOST}
+                    header_up X-Forwarded-For {http.request.header.CF-Connecting-IP}
+                    copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+                }
+                @write not method GET HEAD
+                respond @write "Read-only site" 405
+                header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
+                @asset path /assets/*
+                handle @asset {
+                    root * /srv
+                    file_server
+                }
+                handle {
+                    root * /srv/current
+                    try_files {path} {path}.html {path}/index.html
+                    file_server
+                }
+            }
+        }
+    }
+    handle {
+        respond "Unknown host" 403
+    }
+}

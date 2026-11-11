@@ -1,0 +1,17 @@
+{
+  "date": "2026-01-02",
+  "timeZone": "Asia/Shanghai",
+  "status": "complete",
+  "entries": [
+    {
+      "askedAt": "2026-01-02T01:00:00.000Z",
+      "question": "Following up on the text search note, why does grep -F change the results when I search for check.ready?",
+      "answer": "By default, grep treats the dot as a regular expression character that matches any single character. With -F, grep requires the literal string check.ready. For instance, checkXready matches the regular expression but not the fixed string."
+    },
+    {
+      "askedAt": "2026-01-02T01:05:00.000Z",
+      "question": "How can I count lines that contain a fixed string with grep? What happens if the string appears twice on a line?",
+      "answer": "Run grep -cF -- 'check.ready' /path/to/example.log. The -c flag counts matching lines, so two matches on the same line count once. If no line matches, grep prints 0 and returns exit status 1. Scripts should distinguish no matches from a read error."
+    }
+  ]
+}

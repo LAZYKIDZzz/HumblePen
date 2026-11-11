@@ -1,0 +1,25 @@
+# Private runtime material must never be published.
+.private/
+.state/
+work/
+raw/
+transcripts/
+logs/
+.env
+.env.*
+*.jsonl
+*.sqlite
+*.sqlite-*
+*.db
+__pycache__/
+.DS_Store
+node_modules/
+.vitepress/cache/
+.vitepress/dist/
+.wrangler/
+.dev.vars
+.dev.vars.*
+*.local
+*.pyc
+.venv/
+coverage/

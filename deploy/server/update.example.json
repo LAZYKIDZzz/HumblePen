@@ -1,0 +1,11 @@
+{
+  "repository": "git@github.com:<OWNER>/<REPOSITORY>.git",
+  "site_host": "knowledge.example.com",
+  "deploy_key": "/path/to/private-config/github_deploy_key",
+  "known_hosts": "/path/to/private-config/known_hosts",
+  "data_root": "/path/to/site-data",
+  "stack_root": "/path/to/private-config",
+  "node_image": "<BUILDER_IMAGE_ID>",
+  "build_memory": "2g",
+  "keep_releases": 5
+}

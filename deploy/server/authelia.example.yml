@@ -1,0 +1,51 @@
+server:
+  address: tcp://:9091/auth
+log:
+  level: info
+  format: json
+authentication_backend:
+  refresh_interval: always
+  password_change:
+    disable: true
+  password_reset:
+    disable: true
+  file:
+    path: /config/users.yml
+    watch: false
+access_control:
+  default_policy: deny
+  rules:
+    - domain: knowledge.example.com
+      subject: group:readers
+      policy: two_factor
+session:
+  name: knowledge_session
+  same_site: lax
+  inactivity: 30m
+  expiration: 8h
+  remember_me: -1
+  cookies:
+    - domain: knowledge.example.com
+      authelia_url: https://knowledge.example.com/auth/
+      default_redirection_url: https://knowledge.example.com/
+storage:
+  local:
+    path: /data/auth.sqlite3
+notifier:
+  smtp:
+    # The SMTP password is loaded from the Compose secret.
+    address: submission://smtp.example.com:587
+    # Use the SMTP account and a sender authorized by your provider.
+    username: user@example.com
+    sender: user@example.com
+    identifier: knowledge.example.com
+    startup_check_address: user@example.com
+totp:
+  issuer: Private knowledge
+  digits: 6
+  period: 30
+regulation:
+  modes: [user, ip]
+  max_retries: 5
+  find_time: 2m
+  ban_time: 5m
