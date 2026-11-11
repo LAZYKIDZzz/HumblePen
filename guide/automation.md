@@ -6,13 +6,13 @@
 
 先运行 `npm ci`。从 HumblePen 项目的 Codex 会话发起请求：
 
-> 调用 $humblepen-daily，使用 examples/sample-qa.json 整理 2026-01-02 的虚构问答，输出简体中文笔记，仅生成本地差异。
+> 调用 $humblepen-daily，使用 examples/sample-qa.json 整理 2026-01-02 的虚构问答，按问答原语言写笔记，仅生成本地差异。
 
 预期结果是在已有 `SK-001` 补充按字面匹配的解释，并创建一篇关于统计匹配行的笔记。检查清单与日摘要，然后以相同输入再运行一次，确认差异没有增加。
 
 ## 导入自己的问答
 
-从用户授权的来源准备本地 Markdown 或 JSON 文件。JSON 推荐沿用[虚构问答](../examples/sample-qa.json)的结构。日期按 `timeZone` 解释。每项保存提问时间、问题和对应回答，未得到回答时设为 `null`。记录仅限所需片段。将真实输入放在 Git 之外，或项目内已忽略的 `.private/inbox/`。直接向 Skill 指定文件、日期和输出语言。需要中英双语笔记时，在请求中明确选择两种语言。
+从用户授权的来源准备本地 Markdown 或 JSON 文件。JSON 推荐沿用[虚构问答](../examples/sample-qa.json)的结构。日期按 `timeZone` 解释。每项保存提问时间、问题和对应回答，未得到回答时设为 `null`。记录仅限所需片段。将真实输入放在 Git 之外，或项目内已忽略的 `.private/inbox/`。向 Skill 指定文件和日期即可。整理时逐条沿用问答的主要语言。中英文同时出现时，按各条问答的语言分别归档。
 
 ## 用 Codex 只读采集器
 

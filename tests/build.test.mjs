@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { cpSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -44,11 +44,18 @@ async function verifyBuild(t, scenario) {
   }
   writeFileSync(join(english, 'docs/skill-index.md'), '# Skill index\n')
   writeFileSync(join(english, 'daily/README.md'), '# Daily updates\n')
-  writeFileSync(join(english, 'daily/2026-01-01.md'), '# 2026-01-01\n\n- [SK-432](../docs/skills/SK-432.md)\n')
+  writeFileSync(join(english, 'daily/2026-01-01.md'), [
+    '# 2026-01-01', '', '- [SK-432](../docs/skills/SK-432.md)', '- [SK-433](../docs/skills/SK-433.md)', '',
+  ].join('\n'))
   writeFileSync(join(english, 'docs/skills', note + '.md'), [
     '# SK-432 | Example search', 'Category: Deployment examples | Keywords: grep, fixed strings.',
     'First recorded: 2026-01-01 | Last updated: 2026-01-01 | Last reviewed: 2026-01-01',
     '', 'Use grep to find a literal pattern and print line numbers.', '',
+  ].join('\n'))
+  writeFileSync(join(english, 'docs/skills/SK-433.md'), [
+    '# SK-433 | Check an archive', 'Category: Files | Keywords: archive validation.',
+    'First recorded: 2026-01-01 | Last updated: 2026-01-01 | Last reviewed: 2026-01-01',
+    '', 'Use archive validation before restoring a backup.', '',
   ].join('\n'))
   mkdirSync(join(root, '.vitepress'))
   for (const file of ['config.mts', 'search.mjs', 'theme']) {
@@ -100,6 +107,12 @@ async function verifyBuild(t, scenario) {
   assert.ok(deep.includes('href="' + scenario.base + 'en/docs/skills/SK-432.html" hreflang="en"'))
   assert.ok(enDeep.includes('href="' + scenario.base + 'docs/skills/SK-432.html" hreflang="zh-CN"'))
   assert.equal(enHome.includes('Account / Sign out'), scenario.provider === 'authelia')
+  const englishOnly = 'en/docs/skills/SK-433.html'
+  assert.ok(enHome.includes('href="' + scenario.base + englishOnly + '"'))
+  assert.ok(enUpdates.includes('href="' + scenario.base + englishOnly + '"'))
+  assert.doesNotMatch(readFileSync(join(out, englishOnly), 'utf8'), /class="note-translation"/)
+  assert.equal(existsSync(join(out, 'docs/skills/SK-433.html')), false)
+
 
   for (const html of [home, deep, enHome, enDeep]) {
     const icon = html.match(/<link rel="icon" type="image\/svg\+xml" href="([^"]+)"/)
@@ -128,7 +141,7 @@ async function verifyBuild(t, scenario) {
   const chunks = join(out, 'assets/chunks')
   for (const [locale, prefix, queries] of [
     ['root', 'docs/skills/', ['固定文字', 'grep 行号', 'grep']],
-    ['en', 'en/docs/skills/', ['literal pattern', 'grep line numbers', 'grep']],
+    ['en', 'en/docs/skills/', ['literal pattern', 'grep line numbers', 'grep', 'archive validation']],
   ]) {
     const searchFile = readdirSync(chunks).find(file => file.startsWith('@localSearchIndex' + locale + '.') && file.endsWith('.js'))
     assert.ok(searchFile, 'The ' + locale + ' search index should be built')

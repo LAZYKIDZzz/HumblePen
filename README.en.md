@@ -10,7 +10,7 @@ When you troubleshoot with AI, read documentation, or try a command, the useful 
 
 HumblePen starts with a daily habit. Look back at yesterday's questions and save the answers you expect to use again as Markdown notes. When a follow-up reveals a new constraint or corrects an answer, update the same note. A short daily summary records what changed, so months later you can still find it by question, command, or keyword.
 
-This project shares that note-taking method and the AI workflow that supports it. AI selects useful Q&A, merges related topics, and drafts notes. You check the facts and review the redactions. Read the Markdown files directly or build a searchable site with Simplified Chinese and English versions.
+This project shares that note-taking method and the AI workflow that supports it. AI selects useful Q&A, merges related topics, and drafts notes. You check the facts and review the redactions. Read the Markdown files directly or build a searchable site. The interface and project guides are available in Simplified Chinese and English. Daily notes follow the language of each Q&A.
 
 ## 🗓️ The daily workflow
 

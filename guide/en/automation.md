@@ -6,13 +6,13 @@
 
 Run `npm ci`, then open a Codex chat for the HumblePen project and send this request.
 
-> Run $humblepen-daily with examples/sample-qa.en.json to organize the fictional Q&A for 2026-01-02. Write English notes and leave the changes locally for review.
+> Run $humblepen-daily with examples/sample-qa.en.json to organize the fictional Q&A for 2026-01-02. Keep the language of the Q&A and leave the changes locally for review.
 
 Expect an update to `SK-001` explaining literal matching and a new note about counting matching lines. Review the skill index and daily summary. Run the same input again and confirm that it adds no duplicate entries.
 
 ## Import your own Q&A
 
-Prepare a local Markdown or JSON file from an authorized source. For JSON, use the [fictional Q&A](../../examples/sample-qa.en.json) as a template. Interpret the date in `timeZone`. Store the question time, question, and matching answer in each entry. Use `null` when there is no answer. Keep only the excerpts you need. Keep real input outside Git or in the ignored `.private/inbox/` directory. Give the skill the file path, date, and output language. Ask for both languages if you want the same notes and daily summary in English and Simplified Chinese.
+Prepare a local Markdown or JSON file from an authorized source. For JSON, use the [fictional Q&A](../../examples/sample-qa.en.json) as a template. Interpret the date in `timeZone`. Store the question time, question, and matching answer in each entry. Use `null` when there is no answer. Keep only the excerpts you need. Keep real input outside Git or in the ignored `.private/inbox/` directory. Give the skill the file path and date. It uses the main language of each Q&A. In a mixed batch, it files each entry by its own language.
 
 ## Use the read-only Codex collector
 

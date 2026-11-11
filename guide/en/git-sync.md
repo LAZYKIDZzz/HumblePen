@@ -29,7 +29,7 @@ git commit -m "docs: update knowledge notes"
 git push origin HEAD:refs/heads/main
 ```
 
-Replace the example paths, date, and ID with the files changed by the run. Include the corresponding Chinese paths when you update both languages. Skip the commit if nothing changed. The staged check is for routine note updates. Use full repository review and CI checks for the initial template commit or site changes. Follow your repository's pull request policy. For public repositories, review content before uploading any branch or opening a pull request. Preserve local changes when resolving conflicts.
+Replace the example paths, date, and ID with the files changed by the run. If the batch also contains Chinese notes, stage only the Chinese files it changed. Skip the commit if nothing changed. The staged check is for routine note updates. Use full repository review and CI checks for the initial template commit or site changes. Follow your repository's pull request policy. For public repositories, review content before uploading any branch or opening a pull request. Preserve local changes when resolving conflicts.
 
 ## Automatic sync to a private repository
 
